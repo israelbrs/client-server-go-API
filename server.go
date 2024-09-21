@@ -13,7 +13,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type CotacaoResponse struct {
+type CotacaoResponseServer struct {
 	USDBRL struct {
 		Bid string `json:"bid"`
 	} `json:"USDBRL"`
@@ -38,7 +38,7 @@ func main() {
 			return
 		}
 
-		err = saveCotacao(db, cotacao)
+		err = saveCotacaoServer(db, cotacao)
 		if err != nil {
 			log.Printf("Erro ao salvar cotação: %v", err)
 		}
@@ -71,7 +71,7 @@ func getCotacao() (string, error) {
 		return "", err
 	}
 
-	var cotacaoResp CotacaoResponse
+	var cotacaoResp CotacaoResponseServer
 	err = json.Unmarshal(body, &cotacaoResp)
 	if err != nil {
 		return "", err
@@ -80,7 +80,7 @@ func getCotacao() (string, error) {
 	return cotacaoResp.USDBRL.Bid, nil
 }
 
-func saveCotacao(db *sql.DB, cotacao string) error {
+func saveCotacaoServer(db *sql.DB, cotacao string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
 	defer cancel()
 
